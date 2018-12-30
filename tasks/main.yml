@@ -3,7 +3,7 @@
   become: yes
   apt:
     pkg: "{{ item }}"
-    state: latest
+    state: present
     update_cache: yes
   with_items:
     - apt-transport-https
@@ -28,7 +28,7 @@
   become: true
   apt:
     pkg: "docker-ce"
-    state: latest
+    state: present
     update_cache: yes
 
 - name: Upgrade pip
@@ -50,7 +50,7 @@
   become: true
   pip:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - docker
 
