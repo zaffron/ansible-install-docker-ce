@@ -35,7 +35,7 @@
   become: true
   pip:
     name: pip
-    state: latest
+    state: present
 
 - name: Uninstall python docker
   become: true
