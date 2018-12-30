@@ -1,0 +1,18 @@
+galaxy_info:
+  role_name: install-docker-ce
+  author: Avinash Rijal <avinashrijal@gmail.com>
+  description: Install Docker CE
+
+  license: MIT
+
+  min_ansible_version: 1.2
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+
+  galaxy_tags:
+    - docker
+
+dependencies: []
