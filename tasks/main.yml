@@ -2,15 +2,24 @@
 - name: Install required packages
   become: yes
   apt:
-    pkg: "{{ item }}"
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - python-pip
+      - software-properties-common
     state: present
     update_cache: yes
-  with_items:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - python-pip
-    - software-properties-common
+
+- name: Install additional packages for Ubuntu 14.04
+  become: true
+  apt:
+    pkg:
+      - "linux-image-extra-{{ ansible_kernel }}"
+      - "linux-image-extra-virtual"
+    state: present
+    update_cache: yes
+  when: ansible_distribution_version == 14.04
 
 - name: Add docker's official GPG key to apt
   become: true
@@ -28,31 +37,29 @@
   become: true
   apt:
     pkg: "docker-ce"
-    state: present
+    state: latest
     update_cache: yes
 
 - name: Upgrade pip
   become: true
   pip:
     name: pip
-    state: present
+    state: latest
 
 - name: Uninstall python docker
   become: true
   pip:
-    name: "{{ item }}"
+    name:
+      - docker-py
+      - docker
     state: absent
-  with_items:
-    - docker-py
-    - docker
 
 - name: Install python docker
   become: true
   pip:
-    name: "{{ item }}"
+    name:
+      - docker
     state: present
-  with_items:
-    - docker
 
 - name: Add user to docker group
   become: true
@@ -62,9 +69,9 @@
   with_items: "{{ docker_users }}"
 
 - name: Install latest version of docker-compose
-  shell: "curl -L https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
+  shell: "curl -L https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
   when: docker_compose
 
 - name: Make docker-compose executable
-  file: dest=/user/local/bin/docker-compose  mode=a+x
+  shell: "chmod +x /usr/local/bin/docker-compose"
   when: docker_compose
